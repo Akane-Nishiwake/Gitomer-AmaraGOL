@@ -147,7 +147,7 @@ namespace Gitomer_AmaraGOL
                 {
                     if (universe[x, y])
                     {
-                        CountNeighbor(x, y);
+                       // CountNeighbor(x, y);
                         if (CountNeighbor(x, y) < 2 || CountNeighbor(x, y) > 3)//rules (dead or alive)
                         {
                             scratchPad[x, y] = false;
@@ -171,16 +171,63 @@ namespace Gitomer_AmaraGOL
             scratchPad = temp;
             graphicsPanel1.Invalidate();
         }
-        public int CountNeighbor(int x, int y)
+        public int FiniteCountNeighbor(int x, int y)
         {
+            int neighbor = 0;
             int suzy = universe.GetLength(0);//makes these objects
             int Ricky = universe.GetLength(1);
+            //check x+1,y(middle right)
+        if (x + 1 < suzy && universe[x + 1, y])
+            {
+                neighbor++;
+            }
+            //check rightx,y+1 (bottom right)
+            if (x + 1 < suzy && y + 1 < Ricky && universe[x + 1, y + 1])
+            {
+                neighbor++;
+            }
+            //check x,y+1 (bottom middle)
+            if (y + 1 < Ricky && universe[x, y + 1])
+            {
+                neighbor++;
+            }
+            //check leftx,y (middle left)
+            if (x-1 >= 0 && universe[x-1, y])
+            {
+                neighbor++;
+            }
+            //check leftx,y-1 (top left)
+            if (x-1 >= 0 && y-1>= 0 && universe[x-1, y-1])
+            {
+                neighbor++;
+            }
+            //check x, y-1 (top middle)
+            if (y-1 >= 0 && universe[x, y-1])
+            {
+                neighbor++;
+            }
+            //check leftx, y+1 (bottom left)
+            if (x-1 >= 0 && y+1 < Ricky && universe[x-1, y+1])
+            {
+                neighbor++;
+            }
+            //check rightx, y-1 (top right)
+            if (x+1 < suzy && y-1 >= 0 && universe[x+1, y-1])
+            {
+                neighbor++;
+            }
+
+            return neighbor;
+        }
+        public int CountNeighbor(int x, int y)
+        {
+            return FiniteCountNeighbor(x, y);
+            int suzy = universe.GetLength(0);//x value
+            int Ricky = universe.GetLength(1);//y value
             int neighbor = 0;
             int leftx = ((x - 1) < 0) ? suzy-1 : (x - 1); //if the fist statement is true (? = conditional) then use szy-1 (:=else) use like normal
-            int middlex = x;
             int rightx = ((x + 1) >= suzy) ? 0 : (x + 1);
             int topy = ((y - 1) < 0) ? Ricky-1 : (y - 1); 
-            int middley = y;
             int bottomy = ((y + 1) >= Ricky) ? 0 : (y + 1);
             //check x+1,y (middle right)
             if (rightx < suzy && universe[rightx, y])
@@ -268,6 +315,22 @@ namespace Gitomer_AmaraGOL
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             NextGeneration();
+        }
+
+        private void bySeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //seed user can input
+            //uses modal dialogue box
+        }
+
+        private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //seed that already exist
+        }
+
+        private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //seed by current time
         }
     }
 }
