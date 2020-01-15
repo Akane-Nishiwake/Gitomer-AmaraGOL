@@ -147,8 +147,7 @@ namespace Gitomer_AmaraGOL
                 {
                     if (universe[x, y])
                     {
-                       // CountNeighbor(x, y);
-                        if (CountNeighbor(x, y) < 2 || CountNeighbor(x, y) > 3)//rules (dead or alive)
+                        if (CountNeighbor(x, y) < 2 || CountNeighbor(x, y) > 3)//rules (sees if cell dead or alive then decides if the cell should die or not)
                         {
                             scratchPad[x, y] = false;
                         }
@@ -171,7 +170,7 @@ namespace Gitomer_AmaraGOL
             scratchPad = temp;
             graphicsPanel1.Invalidate();
         }
-        public int FiniteCountNeighbor(int x, int y)
+        public int FiniteCountNeighbor(int x, int y)//this is a finite boundry
         {
             int neighbor = 0;
             int suzy = universe.GetLength(0);//makes these objects
@@ -219,7 +218,7 @@ namespace Gitomer_AmaraGOL
 
             return neighbor;
         }
-        public int CountNeighbor(int x, int y)
+        public int CountNeighbor(int x, int y)//this is toroidal boundry
         {
             return FiniteCountNeighbor(x, y);
             int suzy = universe.GetLength(0);//x value
@@ -269,16 +268,14 @@ namespace Gitomer_AmaraGOL
             {
                 neighbor++;
             }
-
-            //make a method to write neighbor eventually
             return neighbor;
         }
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//this exits from the program
         {
             this.Close();
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)//this makes the program start anew with a new generation count
         {
             for (int y = 0; y < universe.GetLength(1); y++)
             {
@@ -293,44 +290,44 @@ namespace Gitomer_AmaraGOL
             timer.Stop();//makes sure it doesnt run
             graphicsPanel1.Invalidate();
         }
-        //make a button for a randomize generation - One requirement of the assignment will be to generate a random universe of cells. 
-        //Start this by iterating through the universe array using two nested for loops. As we visit each cell generate a random number between 0 and 2 inclusive. 
-        //If the random number's value is 0 then make that cell alive, otherwise make it dead. 
-        //After this is completed the initial universe should be composed of roughly 1/3 living cells and 2/3 dead cells. Later on you can play around with the actual percentage of living to dead cells and see how that affects the game.
-        private void newToolStripButton_Click(object sender, EventArgs e)
+        private void newToolStripButton_Click(object sender, EventArgs e)//this does the same as the new too strip button
         {
             newToolStripMenuItem_Click(sender, e);
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void toolStripButton1_Click(object sender, EventArgs e)//this is the play button
         {
             timer.Start();
         }
 
-        private void toolStripButton2_Click(object sender, EventArgs e)
+        private void toolStripButton2_Click(object sender, EventArgs e)//this is the pause button
         {
             timer.Stop();
         }
 
-        private void toolStripButton3_Click(object sender, EventArgs e)
+        private void toolStripButton3_Click(object sender, EventArgs e)//this is the next button
         {
             NextGeneration();
         }
+        //make a button for a randomize generation - One requirement of the assignment will be to generate a random universe of cells. 
+        //Start this by iterating through the universe array using two nested for loops. As we visit each cell generate a random number between 0 and 2 inclusive. 
+        //If the random number's value is 0 then make that cell alive, otherwise make it dead. 
+        //After this is completed the initial universe should be composed of roughly 1/3 living cells and 2/3 dead cells. 
+        //Later on you can play around with the actual percentage of living to dead cells and see how that affects the game.
 
-        private void bySeedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void bySeedToolStripMenuItem_Click(object sender, EventArgs e) //seed user can input
         {
-            //seed user can input
             //uses modal dialogue box
         }
 
-        private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e)
+        private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e) //seed that already exist
         {
-            //seed that already exist
+           
         }
 
-        private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)//seed by current time
         {
-            //seed by current time
+            
         }
     }
 }
