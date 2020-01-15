@@ -81,7 +81,7 @@ namespace Gitomer_AmaraGOL
                     cellRect.Y = y * cellHeight;
                     cellRect.Width = cellWidth;
                     cellRect.Height = cellHeight;
-                    Font font = new Font("Calibri", 14f);
+                    Font font = new Font("Calibri", 12f);
                     // Fill the cell with a brush if alive 
                     int bob = CountNeighbor(x, y);
                     if (universe[x, y] == true)//prints the generations on the cell
@@ -89,15 +89,11 @@ namespace Gitomer_AmaraGOL
                         StringFormat stringFormat = new StringFormat();
                         stringFormat.Alignment = StringAlignment.Center;
                         stringFormat.LineAlignment = StringAlignment.Center;
-
-                        //Rectangle rect = new Rectangle(0, 0, 100, 100);
-                        //int neighbors = 8;
-
                         e.Graphics.FillRectangle(cellBrush, cellRect);
-                        e.Graphics.DrawString(bob.ToString(), font, Brushes.DarkGray, cellRect, stringFormat);
+                        e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
 
                     }
-                    else if (CountNeighbor(x, y) != 0 && !universe[x, y])
+                    else if (CountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
                     {
                         StringFormat stringFormat = new StringFormat();
                         stringFormat.Alignment = StringAlignment.Center;
