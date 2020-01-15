@@ -173,47 +173,58 @@ namespace Gitomer_AmaraGOL
         }
         public int CountNeighbor(int x, int y)
         {
+            int suzy = universe.GetLength(0);//makes these objects
+            int Ricky = universe.GetLength(1);
             int neighbor = 0;
+
+            int leftx = ((x - 1) < 0) ? suzy-1 : (x - 1); //if the fist statement is true (? = conditional) then use szy-1 (:=else) use like normal
+            int middlex = x;
+            int rightx = ((x + 1) >= suzy) ? 0 : (x + 1);
+            int topy = ((y - 1) < 0) ? Ricky-1 : (y - 1); 
+            int middley = y;
+            int bottomy = ((y + 1) >= Ricky) ? 0 : (y + 1);
+
             //check x+1,y (middle right)
-            if (x + 1 < universe.GetLength(0) && universe[x + 1, y])
+            if (rightx < suzy && universe[rightx, y])
             {
                 neighbor++;
             }
-            //check x+1,y+1 (bottom right)
-            if (x + 1 < universe.GetLength(0) && y + 1 < universe.GetLength(1) && universe[x + 1, y + 1])
+            //check rightx,y+1 (bottom right)
+            if (rightx < suzy && bottomy < Ricky && universe[rightx, bottomy])
             {
                 neighbor++;
             }
             //check x,y+1 (bottom middle)
-            if (y + 1 < universe.GetLength(1) && universe[x, y + 1])
+            if (bottomy < Ricky && universe[x, bottomy])
             {
                 neighbor++;
             }
-            //check x-1,y (middle left)
-            if (x - 1 >= 0 && universe[x - 1, y])
+            //check leftx,y (middle left)
+            if (leftx >= 0 && universe[leftx, y])
             {
                 neighbor++;
             }
-            //check x-1,y-1 (top left)
-            if (x - 1 >= 0 && y - 1 >= 0 && universe[x - 1, y - 1])
+            //check leftx,y-1 (top left)
+            if (leftx >= 0 && topy >= 0 && universe[leftx, topy])
             {
                 neighbor++;
             }
             //check x, y-1 (top middle)
-            if (y - 1 >= 0 && universe[x, y - 1])
+            if (topy >= 0 && universe[x, topy])
             {
                 neighbor++;
             }
-            //check x-1, y+1 (bottom left)
-            if (x - 1 >= 0 && y + 1 < universe.GetLength(1) && universe[x - 1, y + 1])
+            //check leftx, y+1 (bottom left)
+            if (leftx >= 0 && bottomy < Ricky && universe[leftx, bottomy])
             {
                 neighbor++;
             }
-            //check x+1, y-1 (top right)
-            if (x + 1 < universe.GetLength(0) && y - 1 >= 0 && universe[x + 1, y - 1])
+            //check rightx, y-1 (top right)
+            if (rightx < suzy && topy >= 0 && universe[rightx, topy])
             {
                 neighbor++;
             }
+
             //make a method to write neighbor eventually
             return neighbor;
         }
