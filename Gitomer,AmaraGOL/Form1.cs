@@ -176,14 +176,12 @@ namespace Gitomer_AmaraGOL
             int suzy = universe.GetLength(0);//makes these objects
             int Ricky = universe.GetLength(1);
             int neighbor = 0;
-
             int leftx = ((x - 1) < 0) ? suzy-1 : (x - 1); //if the fist statement is true (? = conditional) then use szy-1 (:=else) use like normal
             int middlex = x;
             int rightx = ((x + 1) >= suzy) ? 0 : (x + 1);
             int topy = ((y - 1) < 0) ? Ricky-1 : (y - 1); 
             int middley = y;
             int bottomy = ((y + 1) >= Ricky) ? 0 : (y + 1);
-
             //check x+1,y (middle right)
             if (rightx < suzy && universe[rightx, y])
             {
