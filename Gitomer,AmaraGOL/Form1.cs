@@ -17,7 +17,7 @@ namespace Gitomer_AmaraGOL
         bool[,] universe = new bool[10, 10];
 
         // Drawing colors - storing colors
-        Color gridColor = Color.Black;//Changed color from Black
+        Color gridColor = Color.DarkGray;//Changed color from Black
         Color cellColor = Color.AliceBlue;
 
         // The Timer class
