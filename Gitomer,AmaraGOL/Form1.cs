@@ -14,40 +14,35 @@ namespace Gitomer_AmaraGOL
     {
         // The universe array - 2d array
         //Made initial array larger
-        bool[,] universe = new bool[10, 10];
-
+        int SeedofUniverse;
+        public static int X = Properties.Settings.Default.WidthX;
+        public static int Y = Properties.Settings.Default.HeightY;
+        bool[,] universe = new bool[X, Y];
         // Drawing colors - storing colors
         Color gridColor = Color.DarkGray;//Changed color from Black
-        Color cellColor = Color.AliceBlue;
-
+        Color cellColor = Color.MediumSeaGreen;
         // The Timer class
         Timer timer = new Timer();
-
         // Generation count
         int generations = 0;
-
         public Form1()
         {
             InitializeComponent();
-
             // Setup the timer
             timer.Interval = 500; // milliseconds
             timer.Tick += Timer_Tick;
             timer.Enabled = false; // start timer running having it false makes it not run when program is opened
         }
-
         // Calculate the next generation of cells
         private void NextGeneration()
         {
             //https://natureofcode.com/book/chapter-7-cellular-automata/
-
             // Increment generation count
             generations++;
             RulesofGOL();//goes through the rules
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
         }
-
         // The event called by the timer every Interval milliseconds.
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -81,7 +76,7 @@ namespace Gitomer_AmaraGOL
                     cellRect.Y = y * cellHeight;
                     cellRect.Width = cellWidth;
                     cellRect.Height = cellHeight;
-                    Font font = new Font("Calibri", 12f);
+                    Font font = new Font("ComicSans", 12f);
                     // Fill the cell with a brush if alive 
                     int bob = CountNeighbor(x, y);
                     if (universe[x, y] == true)//prints the generations on the cell
@@ -132,7 +127,7 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.Invalidate(); // use this when anything changes in the window - DO NOT PLACE INSIDE PAINT
             }
         }
-        public void RulesofGOL()
+        private void RulesofGOL()
         {
             int i = universe.GetLength(0);//makes these objects
             int j = universe.GetLength(1);
@@ -166,13 +161,13 @@ namespace Gitomer_AmaraGOL
             scratchPad = temp;
             graphicsPanel1.Invalidate();
         }
-        public int FiniteCountNeighbor(int x, int y)//this is a finite boundry
+        private int FiniteCountNeighbor(int x, int y)//this is a finite boundry
         {
             int neighbor = 0;
             int suzy = universe.GetLength(0);//makes these objects
             int Ricky = universe.GetLength(1);
             //check x+1,y(middle right)
-        if (x + 1 < suzy && universe[x + 1, y])
+            if (x + 1 < suzy && universe[x + 1, y])
             {
                 neighbor++;
             }
@@ -187,42 +182,41 @@ namespace Gitomer_AmaraGOL
                 neighbor++;
             }
             //check leftx,y (middle left)
-            if (x-1 >= 0 && universe[x-1, y])
+            if (x - 1 >= 0 && universe[x - 1, y])
             {
                 neighbor++;
             }
             //check leftx,y-1 (top left)
-            if (x-1 >= 0 && y-1>= 0 && universe[x-1, y-1])
+            if (x - 1 >= 0 && y - 1 >= 0 && universe[x - 1, y - 1])
             {
                 neighbor++;
             }
             //check x, y-1 (top middle)
-            if (y-1 >= 0 && universe[x, y-1])
+            if (y - 1 >= 0 && universe[x, y - 1])
             {
                 neighbor++;
             }
             //check leftx, y+1 (bottom left)
-            if (x-1 >= 0 && y+1 < Ricky && universe[x-1, y+1])
+            if (x - 1 >= 0 && y + 1 < Ricky && universe[x - 1, y + 1])
             {
                 neighbor++;
             }
             //check rightx, y-1 (top right)
-            if (x+1 < suzy && y-1 >= 0 && universe[x+1, y-1])
+            if (x + 1 < suzy && y - 1 >= 0 && universe[x + 1, y - 1])
             {
                 neighbor++;
             }
 
             return neighbor;
         }
-        public int CountNeighbor(int x, int y)//this is toroidal boundry
+        private int CountNeighbor(int x, int y)//this is toroidal boundry
         {
-            return FiniteCountNeighbor(x, y);
             int suzy = universe.GetLength(0);//x value
             int Ricky = universe.GetLength(1);//y value
             int neighbor = 0;
-            int leftx = ((x - 1) < 0) ? suzy-1 : (x - 1); //if the fist statement is true (? = conditional) then use szy-1 (:=else) use like normal
+            int leftx = ((x - 1) < 0) ? suzy - 1 : (x - 1); //if the fist statement is true (? = conditional) then use szy-1 (:=else) use like normal
             int rightx = ((x + 1) >= suzy) ? 0 : (x + 1);
-            int topy = ((y - 1) < 0) ? Ricky-1 : (y - 1); 
+            int topy = ((y - 1) < 0) ? Ricky - 1 : (y - 1);
             int bottomy = ((y + 1) >= Ricky) ? 0 : (y + 1);
             //check x+1,y (middle right)
             if (rightx < suzy && universe[rightx, y])
@@ -318,12 +312,49 @@ namespace Gitomer_AmaraGOL
 
         private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e) //seed that already exist
         {
-           
+            Random rand = new Random(SeedofUniverse);
+            Population(rand);
+            graphicsPanel1.Invalidate();
         }
 
         private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)//seed by current time
         {
-            
+            SeedofUniverse = (int)DateTime.Now.Ticks;
+            Random rand = new Random(SeedofUniverse);
+            Population(rand);
+            graphicsPanel1.Invalidate();
+        }
+
+        private void moduleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogueBoxStuff stuff = new DialogueBoxStuff();
+            stuff.Time = timer.Interval;
+            if (DialogResult.OK == stuff.ShowDialog())
+            {
+                timer.Interval = stuff.Time;
+                universe = new bool[X, Y];
+            }
+            graphicsPanel1.Invalidate();
+        }
+        void Population(Random num)
+        {
+            generations = 0;
+            for (int i = 0; i < universe.GetLength(1); i++)
+            {
+                for (int j = 0; j < universe.GetLength(0); j++)
+                {
+                    if (num.Next() % 3 == 0)
+                    {
+                        universe[j, i] = true;
+                    }
+                    else
+                    {
+                        universe[j, i] = false;
+                    }
+
+                    CountNeighbor(j,i);
+                }
+            }
         }
     }
 }
