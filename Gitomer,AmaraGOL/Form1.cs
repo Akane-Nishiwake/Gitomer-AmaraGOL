@@ -41,6 +41,7 @@ namespace Gitomer_AmaraGOL
             RulesofGOL();//goes through the rules
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
+
         }
         // The event called by the timer every Interval milliseconds.
         private void Timer_Tick(object sender, EventArgs e)
@@ -56,7 +57,8 @@ namespace Gitomer_AmaraGOL
             float cellWidth = (float)graphicsPanel1.ClientSize.Width / (float)universe.GetLength(0);
             // CELL HEIGHT = WINDOW HEIGHT / NUMBER OF CELLS IN Y
             float cellHeight = (float)graphicsPanel1.ClientSize.Height / (float)universe.GetLength(1);
-
+            int _count = Cellcount();
+            LivingGenerations.Text = "Living Generations = " + _count.ToString();
             // A Pen for drawing the grid lines (color, width)
             Pen gridPen = new Pen(gridColor, 1);
 
@@ -299,18 +301,13 @@ namespace Gitomer_AmaraGOL
         {
             NextGeneration();
         }
-        //make a button for a randomize generation - One requirement of the assignment will be to generate a random universe of cells. 
-        //Start this by iterating through the universe array using two nested for loops. As we visit each cell generate a random number between 0 and 2 inclusive. 
-        //If the random number's value is 0 then make that cell alive, otherwise make it dead. 
-        //After this is completed the initial universe should be composed of roughly 1/3 living cells and 2/3 dead cells. 
-        //Later on you can play around with the actual percentage of living to dead cells and see how that affects the game.
 
         private void bySeedToolStripMenuItem_Click(object sender, EventArgs e) //seed user can input
         {
             //uses modal dialogue box
             UserSeedBox UserBox = new UserSeedBox();
             UserBox.UserSeedInput = SeedofUniverse;
-            if(DialogResult.OK == UserBox.ShowDialog())
+            if (DialogResult.OK == UserBox.ShowDialog())
             {
                 Random userInput = new Random(SeedofUniverse);
                 Population(userInput);
@@ -359,7 +356,7 @@ namespace Gitomer_AmaraGOL
                         universe[j, i] = false;
                     }
 
-                    CountNeighbor(j,i);//make the universe
+                    CountNeighbor(j, i);//make the universe
                 }
             }
         }
@@ -374,18 +371,7 @@ namespace Gitomer_AmaraGOL
             //reset here
         }
 
-        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ColorDialog color = new ColorDialog();
-            color.Color = cellColor;
-            if(DialogResult.OK == color.ShowDialog())
-            {
-                cellColor = color.Color;
-                graphicsPanel1.Invalidate();
-            }
-        }
-
-        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)//modal color cell change
         {
             ColorDialog color = new ColorDialog();
             color.Color = cellColor;
@@ -396,7 +382,18 @@ namespace Gitomer_AmaraGOL
             }
         }
 
-        private void gridColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)//changes cell color
+        {
+            ColorDialog color = new ColorDialog();
+            color.Color = cellColor;
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                cellColor = color.Color;
+                graphicsPanel1.Invalidate();
+            }
+        }
+
+        private void gridColorToolStripMenuItem_Click(object sender, EventArgs e)//changes grid color
         {
             ColorDialog gcolor = new ColorDialog();
             gcolor.Color = gridColor;
@@ -407,7 +404,7 @@ namespace Gitomer_AmaraGOL
             }
         }
 
-        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e) //changes background color
         {
             ColorDialog bcolor = new ColorDialog();
             bcolor.Color = graphicsPanel1.BackColor;
@@ -416,6 +413,22 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.BackColor = bcolor.Color;
                 graphicsPanel1.Invalidate();
             }
+        }
+        private int Cellcount()
+        {
+            int number=0;
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                // Iterate through the universe in the x, left to right
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    if(universe[x,y] )
+                    {
+                        number++;
+                    }
+                }
+            }
+            return number;
         }
     }
 }
