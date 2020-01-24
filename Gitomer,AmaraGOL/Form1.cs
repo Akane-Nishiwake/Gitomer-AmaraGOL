@@ -211,6 +211,7 @@ namespace Gitomer_AmaraGOL
         }
         private int CountNeighbor(int x, int y)//this is toroidal boundry
         {
+            return FiniteCountNeighbor(x, y);
             int suzy = universe.GetLength(0);//x value
             int Ricky = universe.GetLength(1);//y value
             int neighbor = 0;
@@ -308,53 +309,65 @@ namespace Gitomer_AmaraGOL
         private void bySeedToolStripMenuItem_Click(object sender, EventArgs e) //seed user can input
         {
             //uses modal dialogue box
+            UserSeedBox UserBox = new UserSeedBox();
+            UserBox.UserSeedInput = SeedofUniverse;
+            if(DialogResult.OK == UserBox.ShowDialog())
+            {
+                Random userInput = new Random(SeedofUniverse);
+                Population(userInput);
+                graphicsPanel1.Invalidate();
+            }
         }
-
         private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e) //seed that already exist
         {
-            Random rand = new Random(SeedofUniverse);
-            Population(rand);
+            Random rand = new Random(SeedofUniverse);//initialize random
+            Population(rand);//populate
             graphicsPanel1.Invalidate();
         }
 
         private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)//seed by current time
         {
-            SeedofUniverse = (int)DateTime.Now.Ticks;
-            Random rand = new Random(SeedofUniverse);
-            Population(rand);
+            SeedofUniverse = (int)DateTime.Now.Ticks;//initialize to current time
+            Random rand = new Random(SeedofUniverse);//makes random seed
+            Population(rand);//random population
             graphicsPanel1.Invalidate();
         }
 
-        private void moduleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void moduleToolStripMenuItem_Click(object sender, EventArgs e)//this is the dialogue box
         {
-            DialogueBoxStuff stuff = new DialogueBoxStuff();
-            stuff.Time = timer.Interval;
-            if (DialogResult.OK == stuff.ShowDialog())
+            DialogueBoxStuff stuff = new DialogueBoxStuff();//this calls upon dialogue box
+            stuff.Time = timer.Interval;//makes dialogue box time current time
+            if (DialogResult.OK == stuff.ShowDialog())//initializes if they press ok
             {
-                timer.Interval = stuff.Time;
-                universe = new bool[X, Y];
+                timer.Interval = stuff.Time;//makes new time current time
+                universe = new bool[X, Y];//changes size
             }
-            graphicsPanel1.Invalidate();
+            graphicsPanel1.Invalidate();//does the thing to make it work
         }
-        void Population(Random num)
+        void Population(Random num)//method to populate universe
         {
-            generations = 0;
-            for (int i = 0; i < universe.GetLength(1); i++)
+            generations = 0;//set generations to zero
+            for (int i = 0; i < universe.GetLength(1); i++)//y axis
             {
-                for (int j = 0; j < universe.GetLength(0); j++)
+                for (int j = 0; j < universe.GetLength(0); j++)//x axis
                 {
-                    if (num.Next() % 3 == 0)
+                    if (num.Next() % 3 == 0)//divisible by 3 live
                     {
                         universe[j, i] = true;
                     }
-                    else
+                    else//not dead
                     {
                         universe[j, i] = false;
                     }
 
-                    CountNeighbor(j,i);
+                    CountNeighbor(j,i);//make the universe
                 }
             }
         }
-    }
+
+        private void saveToolStripButton_Click(object sender, EventArgs e)//this saves current univerese
+        {
+            //enter save code here
+        }
+   }
 }

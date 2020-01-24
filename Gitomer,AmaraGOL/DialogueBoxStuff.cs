@@ -39,7 +39,7 @@ namespace Gitomer_AmaraGOL
             {
                 numericUpDown2.Value = value;
             }
-        }
+        } 
         public int Width
         {
             get
