@@ -8,5 +8,17 @@
     <Setting Name="WidthX" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
+    <Setting Name="GridColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">DarkGray</Value>
+    </Setting>
+    <Setting Name="PanelColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="CellColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">MediumSeaGreen</Value>
+    </Setting>
+    <Setting Name="TimeReset" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

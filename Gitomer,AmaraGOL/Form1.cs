@@ -12,8 +12,7 @@ namespace Gitomer_AmaraGOL
 {
     public partial class Form1 : Form
     {
-        // The universe array - 2d array
-        //Made initial array larger
+
         int SeedofUniverse;
         public static int X = Properties.Settings.Default.WidthX;
         public static int Y = Properties.Settings.Default.HeightY;
@@ -369,5 +368,54 @@ namespace Gitomer_AmaraGOL
         {
             //enter save code here
         }
-   }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //reset here
+        }
+
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            color.Color = cellColor;
+            if(DialogResult.OK == color.ShowDialog())
+            {
+                cellColor = color.Color;
+                graphicsPanel1.Invalidate();
+            }
+        }
+
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            color.Color = cellColor;
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                cellColor = color.Color;
+                graphicsPanel1.Invalidate();
+            }
+        }
+
+        private void gridColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog gcolor = new ColorDialog();
+            gcolor.Color = gridColor;
+            if (DialogResult.OK == gcolor.ShowDialog())
+            {
+                gridColor = gcolor.Color;
+                graphicsPanel1.Invalidate();
+            }
+        }
+
+        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog bcolor = new ColorDialog();
+            bcolor.Color = graphicsPanel1.BackColor;
+            if (DialogResult.OK == bcolor.ShowDialog())
+            {
+                graphicsPanel1.BackColor = bcolor.Color;
+                graphicsPanel1.Invalidate();
+            }
+        }
+    }
 }
