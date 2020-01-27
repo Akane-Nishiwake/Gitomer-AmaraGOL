@@ -85,7 +85,7 @@ namespace Gitomer_AmaraGOL.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int TimeReset {
             get {
                 return ((int)(this["TimeReset"]));

@@ -15,6 +15,7 @@ namespace Gitomer_AmaraGOL
         public UserSeedBox()
         {
             InitializeComponent();
+
         }
         public int UserSeedInput
         {
@@ -37,6 +38,12 @@ namespace Gitomer_AmaraGOL
         {
             Random randy = new Random();
             UserSeedGenerator.Value = randy.Next() % UserSeedGenerator.Maximum;
+            
+        }
+
+        private void Cancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

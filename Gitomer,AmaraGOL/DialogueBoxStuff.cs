@@ -15,8 +15,8 @@ namespace Gitomer_AmaraGOL
         public DialogueBoxStuff()
         {
             InitializeComponent();
-            Width = Form1.X;
-            Height = Form1.Y;
+            UniverseWidth = Form1.X;
+            UniverseHeight = Form1.Y;
         }
         public int Time 
         {
@@ -29,7 +29,7 @@ namespace Gitomer_AmaraGOL
                 numericUpDown1.Value = value;
             }
         }
-        public int Height
+        public int UniverseHeight
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Gitomer_AmaraGOL
                 numericUpDown2.Value = value;
             }
         } 
-        public int Width
+        public int UniverseWidth
         {
             get
             {
@@ -58,14 +58,19 @@ namespace Gitomer_AmaraGOL
 
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)//height
         {
-            Height = (int)numericUpDown2.Value;
-            Form1.Y = Height;
+            UniverseHeight = (int)numericUpDown2.Value;
+            Form1.Y = UniverseHeight;
         }
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)//width
         {
-            Width = (int)numericUpDown3.Value;
-            Form1.X = Height;
+            UniverseWidth = (int)numericUpDown3.Value;
+            Form1.X = UniverseWidth;
+        }
+
+        private void Cancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
         }
     }
 }

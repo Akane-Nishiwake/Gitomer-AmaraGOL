@@ -39,9 +39,9 @@
             // OK
             // 
             this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OK.Location = new System.Drawing.Point(26, 130);
+            this.OK.Location = new System.Drawing.Point(26, 90);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(112, 42);
+            this.OK.Size = new System.Drawing.Size(112, 29);
             this.OK.TabIndex = 0;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
@@ -49,16 +49,17 @@
             // Cancel
             // 
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(225, 130);
+            this.Cancel.Location = new System.Drawing.Point(180, 90);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(109, 42);
+            this.Cancel.Size = new System.Drawing.Size(109, 29);
             this.Cancel.TabIndex = 1;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // UserSeedGenerator
             // 
-            this.UserSeedGenerator.Location = new System.Drawing.Point(26, 58);
+            this.UserSeedGenerator.Location = new System.Drawing.Point(26, 45);
             this.UserSeedGenerator.Maximum = new decimal(new int[] {
             100000000,
             0,
@@ -76,9 +77,9 @@
             // 
             // Randomize
             // 
-            this.Randomize.Location = new System.Drawing.Point(225, 58);
+            this.Randomize.Location = new System.Drawing.Point(177, 40);
             this.Randomize.Name = "Randomize";
-            this.Randomize.Size = new System.Drawing.Size(109, 23);
+            this.Randomize.Size = new System.Drawing.Size(112, 26);
             this.Randomize.TabIndex = 3;
             this.Randomize.Text = "Randomize";
             this.Randomize.UseVisualStyleBackColor = true;
@@ -87,17 +88,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 20);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(351, 13);
+            this.label1.Size = new System.Drawing.Size(280, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Please either make a seed or have the computer generate a seed for you";
+            this.label1.Text = "Please enter a seed or press the button for a random seed";
             // 
             // UserSeedBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(369, 184);
+            this.ClientSize = new System.Drawing.Size(304, 135);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Randomize);
             this.Controls.Add(this.UserSeedGenerator);

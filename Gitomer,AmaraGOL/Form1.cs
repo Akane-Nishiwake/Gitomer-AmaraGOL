@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Gitomer_AmaraGOL
 {
@@ -55,7 +56,7 @@ namespace Gitomer_AmaraGOL
             float cellHeight = (float)graphicsPanel1.ClientSize.Height / (float)universe.GetLength(1);
 
             int _count = Cellcount();
-            LivingGenerations.Text = "Living Generations = " + _count.ToString();//prints living generations on status strip
+            LivingGenerations.Text = "Living Cells = " + _count.ToString();//prints living generations on status strip
 
             currentTimer.Text = "Current Timer = " + timer.Interval.ToString() + " milliseconds";//prints current timer interval to status strip
             // A Pen for drawing the grid lines (color, width)
@@ -126,7 +127,7 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.Invalidate(); // use this when anything changes in the window - DO NOT PLACE INSIDE PAINT
             }
         }
-        
+        //
         //This section is for Methods involved in Rules and Counting
         private void RulesofGOL()//rules of Game of Life that say if a cell is dead or alive
         {
@@ -276,20 +277,19 @@ namespace Gitomer_AmaraGOL
                     universe[x, y] = false;
                 }
             }
-            generations = -1;
-            NextGeneration();//resets generations
+            ResetGenerationsCount();
             timer.Stop();//makes sure it doesnt run
             graphicsPanel1.Invalidate();
         }
         private int Cellcount()//counts living generations
         {
-            int number=0;
+            int number = 0;
             for (int y = 0; y < universe.GetLength(1); y++)
             {
                 // Iterate through the universe in the x, left to right
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
-                    if(universe[x,y] )
+                    if (universe[x, y])
                     {
                         number++;
                     }
@@ -297,79 +297,169 @@ namespace Gitomer_AmaraGOL
             }
             return number;
         }
-       
-        //This section is for menu items and tool strip items that are not inheirently customization
-        private void newToolStripButton_Click(object sender, EventArgs e)//this does the same as the new too strip button
+        private void ResetGenerationsCount()//making generations count 0 again
         {
-            newToolStripMenuItem_Click(sender, e);
+            generations = -1;
+            NextGeneration();
+            graphicsPanel1.Invalidate();
         }
-        private void saveToolStripButton_Click(object sender, EventArgs e)//this saves current univerese
-        {	
-            //Saving the current universe to a text file. 
-            //The current state and size of the universe should be able to be saved in PlainText file format. 
-            //The file name should be chosen by the user with a save file dialog box.
+        //
+        //This section is for the Passive Save, Reset, and Reload
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //put new property settings to save previous form
+            //use this to call reload
+            Properties.Settings.Default.WidthX = universe.GetLength(0);
+            Properties.Settings.Default.HeightY = universe.GetLength(1);
+            Properties.Settings.Default.CellColor = cellColor;
+            Properties.Settings.Default.GridColor = gridColor;
+            Properties.Settings.Default.PanelColor = graphicsPanel1.BackColor;
+            Properties.Settings.Default.TimeReset = timer.Interval;
+            graphicsPanel1.Invalidate();
         }
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)//reload previous universe
+        {
+            Properties.Settings.Default.Reload();
+            //reload previous universe
+
+            graphicsPanel1.Invalidate();
+        }
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)//This resets to the previous universe/colors
+        {
+            //Reset will return the applications default settings for these values.
+            Properties.Settings.Default.Reset();
+            //X = Properties.Settings.Default.WidthX;
+            //Y = Properties.Settings.Default.HeightY;
+            cellColor = Properties.Settings.Default.CellColor;
+            gridColor = Properties.Settings.Default.GridColor;
+            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
+            timer.Interval = Properties.Settings.Default.TimeReset;
+            graphicsPanel1.Invalidate();
+        }
+
+        //
+        //This section is for menu items 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)//this opens a previously saved univerese
         {
             //Opening a previously saved universe. 
             //A previously saved PlainText file should be able to be read in and assigned to the current universe. 
             //Opening should also resize the current universe to match the size of the file being read.
         }
-        private void openToolStripButton_Click(object sender, EventArgs e)//does the same as opening but from the tool strip button
-        {
-            openToolStripMenuItem_Click(sender, e);
-        }
-        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Reload will revert back to the last saved settings
-        }
-        private void resetToolStripMenuItem_Click(object sender, EventArgs e)//This resets to the previous universe/colors
-        {
-            //Reset will return the applications default settings for these values.
-        }
-        private void toolStripButton1_Click(object sender, EventArgs e)//this is the play button
-        {
-            timer.Start();
-        }
         private void playToolStripMenuItem_Click(object sender, EventArgs e)//play menu item
         {
             toolStripButton1_Click(sender, e);
-        }
-        private void toolStripButton2_Click(object sender, EventArgs e)//this is the pause button
-        {
-            timer.Stop();
         }
         private void pauseToolStripMenuItem_Click(object sender, EventArgs e)//pause menu item
         {
             toolStripButton2_Click(sender, e);
         }
-        private void toolStripButton3_Click(object sender, EventArgs e)//this is the next button
-        {
-            NextGeneration();
-        }
         private void nextToolStripMenuItem_Click(object sender, EventArgs e)//next menu item
         {
             toolStripButton3_Click(sender, e);
         }
-       
-        //This section is for Randomize
-        private void Population(Random num)//method to populate universe with random
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)//save menu item
         {
-            generations = 0;//set generations to zero
-            for (int i = 0; i < universe.GetLength(1); i++)//y axis
+            saveToolStripButton_Click(sender, e);
+        }
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)//save as method for saving universe as a txt file
+        {
+            SaveASDialogue savefile = new SaveASDialogue();
+            savefile.Filter = "All Files |*.*|Cells| *.cells";//add to this function
+            savefile.FilterIndex = 2;//add to this function
+            savefile.DefaultExt = "cells";//add to this function
+            if (DialogResult.OK == savefile.ShowDialog())
             {
-                for (int j = 0; j < universe.GetLength(0); j++)//x axis
+                StreamWriter userSave = new StreamWriter("dlg.FileName");
+                userSave.WriteLine("!This is a comment?");
+                for (int y = 0; y < universe.GetLength(1); y++)//iterate through y-axis
                 {
-                    if (num.Next() % 3 == 0)//divisible by 3 live
+                    string currentRow = string.Empty;//current row string
+                    for (int x = 0; x < universe.GetLength(0); x++)//iterate through x-axis
                     {
-                        universe[j, i] = true;
+                        if (universe[x, y] == true)
+                        {
+                            //if alive then append 'O' to row string
+                            currentRow += 'O';
+                        }
+                        else
+                        {
+                            //if dead then append '.' to the row string
+                            currentRow += '.';
+                        }
                     }
-                    else//not dead
-                    {
-                        universe[j, i] = false;
-                    }
+                    userSave.Close();
+                }
+            }
+        }
 
-                    CountNeighbor(j, i);//make the universe
+        //
+        //This section is for tool strip items
+        private void newToolStripButton_Click(object sender, EventArgs e)//this does the same as the new too strip button
+        {
+            newToolStripMenuItem_Click(sender, e);
+        }
+        private void saveToolStripButton_Click(object sender, EventArgs e)//this saves current univerese as txt file
+        {
+            //Saving the current universe to a text file. 
+            //The current state and size of the universe should be able to be saved in PlainText file format. 
+            //The file name should be chosen by the user with a save file dialog box.
+            StreamWriter userSave = new StreamWriter("GameOfLife.txt");
+            userSave.WriteLine("!This is a comment?");
+            for (int y = 0; y < universe.GetLength(1); y++)//iterate through y-axis
+            {
+                string currentRow = string.Empty;//current row string
+                for (int x = 0; x < universe.GetLength(0); x++)//iterate through x-axis
+                {
+                    if (universe[x, y] == true)
+                    {
+                        //if alive then append 'O' to row string  
+                        currentRow += 'O';
+                    }
+                    else
+                    {
+                        //if dead then append '.' to the row string
+                        currentRow += '.';
+                    }
+                }
+                userSave.Close();
+            }
+        }
+        private void openToolStripButton_Click(object sender, EventArgs e)//does the same as opening but from the tool strip button
+        {
+            openToolStripMenuItem_Click(sender, e);
+        }
+        private void toolStripButton1_Click(object sender, EventArgs e)//this is the play button
+        {
+            timer.Start();
+        }
+        private void toolStripButton2_Click(object sender, EventArgs e)//this is the pause button
+        {
+            timer.Stop();
+        }
+        private void toolStripButton3_Click(object sender, EventArgs e)//this is the next button
+        {
+            NextGeneration();
+        }
+
+        //
+        //This section is for Randomize
+        private void Population(int num)//method to populate universe with random
+        {
+            ResetGenerationsCount();
+            Random temp = new Random(num);
+            for (int y = 0; y < universe.GetLength(1); y++)//y axis
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)//x axis
+                {
+                    if (temp.Next() % 3 == 0)//divisible by 3 live
+                    {
+                        universe[x, y] = true;
+                    }
+                    else
+                    {
+                        universe[x, y] = false;
+                    }
+                    CountNeighbor(x, y);//make the universe
                 }
             }
         }
@@ -378,28 +468,30 @@ namespace Gitomer_AmaraGOL
             //uses modal dialogue box
             UserSeedBox UserBox = new UserSeedBox();
             UserBox.UserSeedInput = SeedofUniverse;
+            //Random userInput = new Random(SeedofUniverse);
             if (DialogResult.OK == UserBox.ShowDialog())
             {
-                Random userInput = new Random(SeedofUniverse);
-                Population(userInput);
+                SeedofUniverse = UserBox.UserSeedInput;
+                Population(SeedofUniverse);
                 graphicsPanel1.Invalidate();
             }
         }
         private void fromCurrentSeedToolStripMenuItem_Click(object sender, EventArgs e) //seed that already exist
         {
-            Random rand = new Random(SeedofUniverse);//initialize random
-            Population(rand);//populate
+            // Random rand = new Random(SeedofUniverse);//initialize random
+            Population(SeedofUniverse);//populate
             graphicsPanel1.Invalidate();
         }
         private void byTimeToolStripMenuItem_Click(object sender, EventArgs e)//seed by current time
         {
             SeedofUniverse = (int)DateTime.Now.Ticks;//initialize to current time
-            Random rand = new Random(SeedofUniverse);//makes random seed
-            Population(rand);//random population
+            //Random rand = new Random(SeedofUniverse);//makes random seed
+            Population(SeedofUniverse);//random population
             graphicsPanel1.Invalidate();
         }
-       
-        //This section is for customizing
+
+        //
+        //This section is for specialized customizing
         private void moduleToolStripMenuItem_Click(object sender, EventArgs e)//this is the dialogue box for right clicking 
         {
             DialogueBoxStuff stuff = new DialogueBoxStuff();//this calls upon dialogue box
@@ -408,6 +500,7 @@ namespace Gitomer_AmaraGOL
             {
                 timer.Interval = stuff.Time;//makes new time current time
                 universe = new bool[X, Y];//changes size
+                ResetGenerationsCount();
             }
             graphicsPanel1.Invalidate();//does the thing to make it work
         }
@@ -450,6 +543,12 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.BackColor = bcolor.Color;
                 graphicsPanel1.Invalidate();
             }
+        }
+
+        private void boundryChangeToolStripMenuItem1_Click(object sender, EventArgs e)//boundry change dialouge
+        {
+            BoundryForm boundry = new BoundryForm();
+            if (DialogResult.OK == boundry.ShowDialog()) ;
         }
 
     }
