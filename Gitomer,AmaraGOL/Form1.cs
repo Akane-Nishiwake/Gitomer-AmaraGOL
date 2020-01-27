@@ -17,6 +17,9 @@ namespace Gitomer_AmaraGOL
         public static int X = Properties.Settings.Default.WidthX;//X axis initialization
         public static int Y = Properties.Settings.Default.HeightY;//Yaxis initialization
         bool[,] universe = new bool[X, Y];//initialization of changeable universe
+        public static int i = X;//makes these objects
+        public static int j = Y;
+        bool[,] scratchPad = new bool[i, j];
         // Drawing colors - storing colors
         Color gridColor = Color.DarkGray;//default grid color
         Color cellColor = Color.MediumSeaGreen;//default cell color
@@ -131,9 +134,6 @@ namespace Gitomer_AmaraGOL
         //This section is for Methods involved in Rules and Counting
         private void RulesofGOL()//rules of Game of Life that say if a cell is dead or alive
         {
-            int i = universe.GetLength(0);//makes these objects
-            int j = universe.GetLength(1);
-            bool[,] scratchPad = new bool[i, j];
             for (int y = 0; y < j; y++)
             {
                 for (int x = 0; x < i; x++)//runs through the neighbors
@@ -339,12 +339,6 @@ namespace Gitomer_AmaraGOL
 
         //
         //This section is for menu items 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)//this opens a previously saved univerese
-        {
-            //Opening a previously saved universe. 
-            //A previously saved PlainText file should be able to be read in and assigned to the current universe. 
-            //Opening should also resize the current universe to match the size of the file being read.
-        }
         private void playToolStripMenuItem_Click(object sender, EventArgs e)//play menu item
         {
             toolStripButton1_Click(sender, e);
@@ -361,12 +355,87 @@ namespace Gitomer_AmaraGOL
         {
             saveToolStripButton_Click(sender, e);
         }
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)//this opens a previously saved univerese
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "All Files|*.*|Cells|*.cells";
+            dlg.FilterIndex = 2;
+            if (DialogResult.OK == dlg.ShowDialog())
+            {
+                StreamReader reader = new StreamReader(dlg.FileName);
+                // Create a couple variables to calculate the width and height
+                // of the data in the file.
+                int maxWidth = 0;
+                int maxHeight = 0;
+                // Iterate through the file once to get its size.
+                while (!reader.EndOfStream)
+                {
+                    // Read one row at a time.
+                    string row = reader.ReadLine();
+                    // If the row begins with '!' then it is a comment
+                    // and should be ignored.
+                    if (row[0] == '!')
+                    {
+                        continue;
+                    }
+                    // If the row is not a comment then it is a row of cells.
+                    else
+                    {
+                        // Increment the maxHeight variable for each row read.
+                        maxHeight++;
+                        // Get the length of the current row string
+                        // and adjust the maxWidth variable if necessary.
+                        maxWidth = row.Length;
+                    }
+                }
+                // Resize the current universe and scratchPad
+                // to the width and height of the file calculated above.
+                universe = new bool[maxWidth, maxHeight];
+                scratchPad = new bool[maxWidth, maxHeight];
+                // Reset the file pointer back to the beginning of the file.
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                // Iterate through the file again, this time reading in the cells.
+                int newHeight = 0;
+                while (!reader.EndOfStream)
+                {
+                    // Read one row at a time.
+                    string row = reader.ReadLine();
+                    // If the row begins with '!' then
+                    // it is a comment and should be ignored.
+                    if (row[0] == '!')
+                    {
+                        continue;
+                    }
+                    // If the row is not a comment then 
+                    // it is a row of cells and needs to be iterated through.
+                    else
+                    { 
+                        for (int x = 0; x < row.Length; x++)//iterate through x-axis
+                        {
+                            if (row[x] == 'O')
+                            {
+                                //if alive then append 'O' to row string  
+                                universe[x,newHeight] = true;
+                            }
+                            else
+                            {
+                                //if dead then append '.' to the row string
+                                universe[x,newHeight] = false;
+                            }
+                        }
+                        newHeight++;
+                    }
+                }
+                // Close the file.
+                reader.Close();
+            }
+        }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)//save as method for saving universe as a txt file
         {
-            SaveASDialogue savefile = new SaveASDialogue();
-            savefile.Filter = "All Files |*.*|Cells| *.cells";//add to this function
-            savefile.FilterIndex = 2;//add to this function
-            savefile.DefaultExt = "cells";//add to this function
+            SaveFileDialog savefile = new SaveFileDialog();
+            savefile.Filter = "All Files |*.*|Cells| *.cells";//add to this function in dialogue box
+            savefile.FilterIndex = 2;//add to this function in dialogue box
+            savefile.DefaultExt = "cells";//add to this function in dialogue box
             if (DialogResult.OK == savefile.ShowDialog())
             {
                 StreamWriter userSave = new StreamWriter("dlg.FileName");
