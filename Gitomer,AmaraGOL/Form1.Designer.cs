@@ -75,6 +75,8 @@
             this.moduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.boundryChangeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.graphicsPanel1 = new Gitomer_AmaraGOL.GraphicsPanel();
+            this.gridOnOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.neighborCountOnOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -193,8 +195,10 @@
             this.playToolStripMenuItem,
             this.pauseToolStripMenuItem,
             this.nextToolStripMenuItem,
+            this.boundryChangeToolStripMenuItem,
             this.hUDToolStripMenuItem,
-            this.boundryChangeToolStripMenuItem});
+            this.gridOnOffToolStripMenuItem,
+            this.neighborCountOnOffToolStripMenuItem});
             this.Menu.Name = "Menu";
             this.Menu.Size = new System.Drawing.Size(50, 20);
             this.Menu.Text = "Menu";
@@ -222,9 +226,12 @@
             // 
             // hUDToolStripMenuItem
             // 
+            this.hUDToolStripMenuItem.Checked = true;
+            this.hUDToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.hUDToolStripMenuItem.Name = "hUDToolStripMenuItem";
-            this.hUDToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.hUDToolStripMenuItem.Text = "HUD";
+            this.hUDToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.hUDToolStripMenuItem.Text = "HUD On/Off";
+            this.hUDToolStripMenuItem.Click += new System.EventHandler(this.hUDToolStripMenuItem_Click);
             // 
             // boundryChangeToolStripMenuItem
             // 
@@ -465,6 +472,24 @@
             this.graphicsPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.graphicsPanel1_Paint);
             this.graphicsPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.graphicsPanel1_MouseClick);
             // 
+            // gridOnOffToolStripMenuItem
+            // 
+            this.gridOnOffToolStripMenuItem.Checked = true;
+            this.gridOnOffToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.gridOnOffToolStripMenuItem.Name = "gridOnOffToolStripMenuItem";
+            this.gridOnOffToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.gridOnOffToolStripMenuItem.Text = "Grid On/Off";
+            this.gridOnOffToolStripMenuItem.Click += new System.EventHandler(this.gridOnOffToolStripMenuItem_Click);
+            // 
+            // neighborCountOnOffToolStripMenuItem
+            // 
+            this.neighborCountOnOffToolStripMenuItem.Checked = true;
+            this.neighborCountOnOffToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.neighborCountOnOffToolStripMenuItem.Name = "neighborCountOnOffToolStripMenuItem";
+            this.neighborCountOnOffToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.neighborCountOnOffToolStripMenuItem.Text = "Neighbor Count On/Off";
+            this.neighborCountOnOffToolStripMenuItem.Click += new System.EventHandler(this.neighborCountOnOffToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -537,6 +562,8 @@
         private System.Windows.Forms.ToolStripMenuItem hUDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem boundryChangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem boundryChangeToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem gridOnOffToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem neighborCountOnOffToolStripMenuItem;
     }
 }
 

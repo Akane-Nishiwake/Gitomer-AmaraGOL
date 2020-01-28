@@ -22,8 +22,8 @@ namespace Gitomer_AmaraGOL
         public static int j;
         bool[,] scratchPad = new bool[i, j];
         // Drawing colors - storing colors
-        Color gridColor = Color.DarkGray;//default grid color
-        Color cellColor = Color.MediumSeaGreen;//default cell color
+        Color gridColor = Properties.Settings.Default.GridColor;//default grid color
+        Color cellColor = Properties.Settings.Default.CellColor;//default cell color
         // The Timer class
         Timer timer = new Timer();
         // Generation count
@@ -31,8 +31,9 @@ namespace Gitomer_AmaraGOL
         public Form1()
         {
             InitializeComponent();
+            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
             // Setup the timer
-            timer.Interval = 100; // milliseconds
+            timer.Interval = Properties.Settings.Default.TimeReset; // milliseconds
             timer.Tick += Timer_Tick;
             timer.Enabled = false; // start timer running having it false makes it not run when program is opened
         }
@@ -125,7 +126,10 @@ namespace Gitomer_AmaraGOL
 
                     }
                     // Outline the cell with a pen
-                    e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    if (gridOnOffToolStripMenuItem.Checked)
+                    {
+                        e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
+                    }
                 }
             }
 
@@ -199,7 +203,7 @@ namespace Gitomer_AmaraGOL
                             }
                             else
                             {
-                               newscratchpad[x, y] = true;
+                                newscratchpad[x, y] = true;
                             }
                         }
                         else
@@ -357,6 +361,7 @@ namespace Gitomer_AmaraGOL
             NextGeneration();
             graphicsPanel1.Invalidate();
         }
+
         //
         //This section is for the Passive Save, Reset, and Reload
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -369,21 +374,23 @@ namespace Gitomer_AmaraGOL
             Properties.Settings.Default.GridColor = gridColor;
             Properties.Settings.Default.PanelColor = graphicsPanel1.BackColor;
             Properties.Settings.Default.TimeReset = timer.Interval;
-            graphicsPanel1.Invalidate();
+            Properties.Settings.Default.Save();
         }
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)//reload previous universe
         {
             Properties.Settings.Default.Reload();
-            //reload previous universe
-
+            universe = new bool[Properties.Settings.Default.WidthX, Properties.Settings.Default.HeightY];
+            cellColor = Properties.Settings.Default.CellColor;
+            gridColor = Properties.Settings.Default.GridColor;
+            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
+            timer.Interval = Properties.Settings.Default.TimeReset;
             graphicsPanel1.Invalidate();
         }
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)//This resets to the previous universe/colors
         {
             //Reset will return the applications default settings for these values.
             Properties.Settings.Default.Reset();
-            //X = Properties.Settings.Default.WidthX;
-            //Y = Properties.Settings.Default.HeightY;
+            universe = new bool[Properties.Settings.Default.WidthX, Properties.Settings.Default.HeightY];
             cellColor = Properties.Settings.Default.CellColor;
             gridColor = Properties.Settings.Default.GridColor;
             graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
@@ -439,9 +446,9 @@ namespace Gitomer_AmaraGOL
                         maxHeight++;
                         // Get the length of the current row string
                         // and adjust the maxWidth variable if necessary.
-                        if(row.Length > maxWidth)
+                        if (row.Length > maxWidth)
                         {
-                        maxWidth = row.Length;
+                            maxWidth = row.Length;
                         }
                     }
                 }
@@ -513,9 +520,9 @@ namespace Gitomer_AmaraGOL
                             currentRow += '.';
                         }
                     }
-                        userSave.WriteLine(currentRow);
+                    userSave.WriteLine(currentRow);
                 }
-                    userSave.Close();
+                userSave.Close();
             }
         }
 
@@ -666,5 +673,23 @@ namespace Gitomer_AmaraGOL
             graphicsPanel1.Invalidate();
         }
 
+        private void gridOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles grid on and off
+        {
+            if (gridOnOffToolStripMenuItem.Checked)
+            {
+                gridOnOffToolStripMenuItem.Checked = false;
+            }
+            else
+                gridOnOffToolStripMenuItem.Checked = true;
+            graphicsPanel1.Invalidate();
+        }
+        private void neighborCountOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles all displayed numbers on and off
+        {
+
+        }
+        private void hUDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
