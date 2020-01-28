@@ -71,6 +71,7 @@ namespace Gitomer_AmaraGOL
             Brush cellBrush = new SolidBrush(cellColor);
 
             //This prints the generations
+
             for (int y = 0; y < universe.GetLength(1); y++)// Iterate through the universe in the y, top to bottom
             {
                 // Iterate through the universe in the x, left to right
@@ -84,24 +85,27 @@ namespace Gitomer_AmaraGOL
                     cellRect.Height = cellHeight;
                     Font font = new Font("ComicSans", 12f);
                     // Fill the cell with a brush if alive 
+                    StringFormat stringFormat = new StringFormat();
+                    stringFormat.Alignment = StringAlignment.Center;
+                    stringFormat.LineAlignment = StringAlignment.Center;
+
                     if (toroidal == true)
                     {
                         int bob = CountNeighbor(x, y);
                         if (universe[x, y] == true)//prints the generations on the cell
                         {
-                            StringFormat stringFormat = new StringFormat();
-                            stringFormat.Alignment = StringAlignment.Center;
-                            stringFormat.LineAlignment = StringAlignment.Center;
                             e.Graphics.FillRectangle(cellBrush, cellRect);
-                            e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
-
+                            if (neighborCountOnOffToolStripMenuItem.Checked)
+                            {
+                                e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
+                            }
                         }
                         else if (CountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
                         {
-                            StringFormat stringFormat = new StringFormat();
-                            stringFormat.Alignment = StringAlignment.Center;
-                            stringFormat.LineAlignment = StringAlignment.Center;
-                            e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                            if (neighborCountOnOffToolStripMenuItem.Checked)
+                            {
+                                e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                            }
                         }
                     }
                     else
@@ -109,21 +113,19 @@ namespace Gitomer_AmaraGOL
                         int bob = FiniteCountNeighbor(x, y);
                         if (universe[x, y] == true)//prints the generations on the cell
                         {
-                            StringFormat stringFormat = new StringFormat();
-                            stringFormat.Alignment = StringAlignment.Center;
-                            stringFormat.LineAlignment = StringAlignment.Center;
                             e.Graphics.FillRectangle(cellBrush, cellRect);
-                            e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
-
+                            if (neighborCountOnOffToolStripMenuItem.Checked)
+                            {
+                                e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
+                            }
                         }
                         else if (FiniteCountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
                         {
-                            StringFormat stringFormat = new StringFormat();
-                            stringFormat.Alignment = StringAlignment.Center;
-                            stringFormat.LineAlignment = StringAlignment.Center;
-                            e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                            if (neighborCountOnOffToolStripMenuItem.Checked)
+                            {
+                                e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                            }
                         }
-
                     }
                     // Outline the cell with a pen
                     if (gridOnOffToolStripMenuItem.Checked)
@@ -132,7 +134,17 @@ namespace Gitomer_AmaraGOL
                     }
                 }
             }
-
+            if(hUDToolStripMenuItem.Checked)
+            {
+                Font newfont = new Font("ComicSans", 12f);
+                StringFormat newstringformat = new StringFormat();
+                newstringformat.Alignment = StringAlignment.Near;
+                newstringformat.LineAlignment = StringAlignment.Far;
+                Color hudColor = Color.FromArgb(150, 180, 0, 240);
+                Brush brushy = new SolidBrush(hudColor);
+                string stringHUD = "Generations = " + generations + "\nCell Count = " + Cellcount() + "\nUniverse size = " + universe.GetLength(0) + " , " + universe.GetLength(1);
+                e.Graphics.DrawString(stringHUD, newfont, brushy, graphicsPanel1.ClientRectangle, newstringformat);
+            }
             // Cleaning up pens and brushes- helps the garbage collector
             gridPen.Dispose();
             cellBrush.Dispose();
@@ -380,10 +392,10 @@ namespace Gitomer_AmaraGOL
         {
             Properties.Settings.Default.Reload();
             universe = new bool[Properties.Settings.Default.WidthX, Properties.Settings.Default.HeightY];
-            cellColor = Properties.Settings.Default.CellColor;
-            gridColor = Properties.Settings.Default.GridColor;
-            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
-            timer.Interval = Properties.Settings.Default.TimeReset;
+            Properties.Settings.Default.CellColor = cellColor;
+            Properties.Settings.Default.GridColor = gridColor;
+            Properties.Settings.Default.PanelColor = graphicsPanel1.BackColor;
+            Properties.Settings.Default.TimeReset = timer.Interval;
             graphicsPanel1.Invalidate();
         }
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)//This resets to the previous universe/colors
@@ -685,11 +697,21 @@ namespace Gitomer_AmaraGOL
         }
         private void neighborCountOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles all displayed numbers on and off
         {
-
+            if (neighborCountOnOffToolStripMenuItem.Checked)
+            {
+                neighborCountOnOffToolStripMenuItem.Checked = false;
+            }
+            else
+                neighborCountOnOffToolStripMenuItem.Checked = true;
+            graphicsPanel1.Invalidate();
         }
         private void hUDToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (hUDToolStripMenuItem.Checked)
+                hUDToolStripMenuItem.Checked = true;
+            else
+                hUDToolStripMenuItem.Checked = false;
+            graphicsPanel1.Invalidate();
         }
     }
 }
