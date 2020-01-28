@@ -48,10 +48,13 @@ namespace Gitomer_AmaraGOL
 
         }
         // The event called by the timer every Interval milliseconds.
-        private void Timer_Tick(object sender, EventArgs e)//the method that notifies next generation to go
+       private void Timer_Tick(object sender, EventArgs e)//the method that notifies next generation to go
         {
             NextGeneration();
         }
+       
+        //
+        //This section is for the graphics/drawing
         private void graphicsPanel1_Paint(object sender, PaintEventArgs e)
         {
             // Calculate the width and height of each cell in pixels
@@ -343,24 +346,6 @@ namespace Gitomer_AmaraGOL
             }
             return neighbor;
         }
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//this exits from the program
-        {
-            this.Close();
-        }
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)//this makes the program start anew with a new generation count
-        {
-            for (int y = 0; y < universe.GetLength(1); y++)
-            {
-                // Iterate through the universe in the x, left to right
-                for (int x = 0; x < universe.GetLength(0); x++)
-                {
-                    universe[x, y] = false;
-                }
-            }
-            ResetGenerationsCount();
-            timer.Stop();//makes sure it doesnt run
-            graphicsPanel1.Invalidate();
-        }
         private int Cellcount()//counts living generations
         {
             int number = 0;
@@ -597,6 +582,24 @@ namespace Gitomer_AmaraGOL
 
         //
         //This section is for menu items 
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)//this exits from the program
+        {
+            this.Close();
+        }
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)//this makes the program start anew with a new generation count
+        {
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                // Iterate through the universe in the x, left to right
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+            ResetGenerationsCount();
+            timer.Stop();//makes sure it doesnt run
+            graphicsPanel1.Invalidate();
+        }
         private void playToolStripMenuItem_Click(object sender, EventArgs e)//play menu item
         {
             toolStripButton1_Click(sender, e);
@@ -645,6 +648,18 @@ namespace Gitomer_AmaraGOL
             else
                 hUDToolStripMenuItem.Checked = true;
             graphicsPanel1.Invalidate();
+        }
+        private void timeAndSizeChangeToolStripMenuItem_Click(object sender, EventArgs e)//dialogue box
+        {
+            DialogueBoxStuff stuff = new DialogueBoxStuff();//this calls upon dialogue box
+            stuff.Time = timer.Interval;//makes dialogue box time current time
+            if (DialogResult.OK == stuff.ShowDialog())//initializes if they press ok
+            {
+                timer.Interval = stuff.Time;//makes new time current time
+                universe = new bool[X, Y];//changes size
+                ResetGenerationsCount();
+            }
+            graphicsPanel1.Invalidate();//does the thing to make it work
         }
 
         //
