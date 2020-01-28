@@ -43,6 +43,7 @@
             this.OK.TabIndex = 0;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
+            this.OK.Click += new System.EventHandler(this.OK_Click);
             // 
             // Cancel
             // 
@@ -65,7 +66,6 @@
             this.ToroidalBoundry.TabStop = true;
             this.ToroidalBoundry.Text = "Toroidal Boundry";
             this.ToroidalBoundry.UseVisualStyleBackColor = true;
-            this.ToroidalBoundry.CheckedChanged += new System.EventHandler(this.ToroidalBoundry_CheckedChanged);
             // 
             // FiniteBoundry
             // 
@@ -77,7 +77,6 @@
             this.FiniteBoundry.TabStop = true;
             this.FiniteBoundry.Text = "Finite Boundry";
             this.FiniteBoundry.UseVisualStyleBackColor = true;
-            this.FiniteBoundry.CheckedChanged += new System.EventHandler(this.FiniteBoundry_CheckedChanged);
             // 
             // BoundryForm
             // 

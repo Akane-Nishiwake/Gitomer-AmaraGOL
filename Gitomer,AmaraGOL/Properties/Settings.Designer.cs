@@ -94,5 +94,17 @@ namespace Gitomer_AmaraGOL.Properties {
                 this["TimeReset"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool toroidal {
+            get {
+                return ((bool)(this["toroidal"]));
+            }
+            set {
+                this["toroidal"] = value;
+            }
+        }
     }
 }

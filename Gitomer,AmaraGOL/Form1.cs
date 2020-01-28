@@ -13,12 +13,13 @@ namespace Gitomer_AmaraGOL
 {
     public partial class Form1 : Form
     {
+        bool toroidal = Properties.Settings.Default.toroidal;
         int SeedofUniverse;//the current Seed of random
         public static int X = Properties.Settings.Default.WidthX;//X axis initialization
         public static int Y = Properties.Settings.Default.HeightY;//Yaxis initialization
         bool[,] universe = new bool[X, Y];//initialization of changeable universe
-        public static int i = X;//makes these objects
-        public static int j = Y;
+        public static int i;//makes these objects
+        public static int j;
         bool[,] scratchPad = new bool[i, j];
         // Drawing colors - storing colors
         Color gridColor = Color.DarkGray;//default grid color
@@ -40,7 +41,7 @@ namespace Gitomer_AmaraGOL
             //https://natureofcode.com/book/chapter-7-cellular-automata/
             // Increment generation count
             generations++;
-            RulesofGOL();//goes through the rules
+            RulesofGOL(toroidal);//goes through the rules
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
 
@@ -82,22 +83,46 @@ namespace Gitomer_AmaraGOL
                     cellRect.Height = cellHeight;
                     Font font = new Font("ComicSans", 12f);
                     // Fill the cell with a brush if alive 
-                    int bob = CountNeighbor(x, y);
-                    if (universe[x, y] == true)//prints the generations on the cell
+                    if (toroidal == true)
                     {
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Center;
-                        stringFormat.LineAlignment = StringAlignment.Center;
-                        e.Graphics.FillRectangle(cellBrush, cellRect);
-                        e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
+                        int bob = CountNeighbor(x, y);
+                        if (universe[x, y] == true)//prints the generations on the cell
+                        {
+                            StringFormat stringFormat = new StringFormat();
+                            stringFormat.Alignment = StringAlignment.Center;
+                            stringFormat.LineAlignment = StringAlignment.Center;
+                            e.Graphics.FillRectangle(cellBrush, cellRect);
+                            e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
 
+                        }
+                        else if (CountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
+                        {
+                            StringFormat stringFormat = new StringFormat();
+                            stringFormat.Alignment = StringAlignment.Center;
+                            stringFormat.LineAlignment = StringAlignment.Center;
+                            e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                        }
                     }
-                    else if (CountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
+                    else
                     {
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Center;
-                        stringFormat.LineAlignment = StringAlignment.Center;
-                        e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                        int bob = FiniteCountNeighbor(x, y);
+                        if (universe[x, y] == true)//prints the generations on the cell
+                        {
+                            StringFormat stringFormat = new StringFormat();
+                            stringFormat.Alignment = StringAlignment.Center;
+                            stringFormat.LineAlignment = StringAlignment.Center;
+                            e.Graphics.FillRectangle(cellBrush, cellRect);
+                            e.Graphics.DrawString(bob.ToString(), font, Brushes.Black, cellRect, stringFormat);
+
+                        }
+                        else if (FiniteCountNeighbor(x, y) != 0 && !universe[x, y])//print generations outside the cell
+                        {
+                            StringFormat stringFormat = new StringFormat();
+                            stringFormat.Alignment = StringAlignment.Center;
+                            stringFormat.LineAlignment = StringAlignment.Center;
+                            e.Graphics.DrawString(bob.ToString(), font, Brushes.IndianRed, cellRect, stringFormat);
+                        }
+
                     }
                     // Outline the cell with a pen
                     e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
@@ -130,37 +155,66 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.Invalidate(); // use this when anything changes in the window - DO NOT PLACE INSIDE PAINT
             }
         }
+
         //
         //This section is for Methods involved in Rules and Counting
-        private void RulesofGOL()//rules of Game of Life that say if a cell is dead or alive
+        private void RulesofGOL(bool changeCount)//rules of Game of Life that say if a cell is dead or alive
         {
+            i = universe.GetLength(0);
+            j = universe.GetLength(1);
+            bool[,] newscratchpad = scratchPad;
+            newscratchpad = new bool[i, j];
             for (int y = 0; y < j; y++)
             {
                 for (int x = 0; x < i; x++)//runs through the neighbors
                 {
-                    if (universe[x, y])
+                    if (changeCount)
                     {
-                        if (CountNeighbor(x, y) < 2 || CountNeighbor(x, y) > 3)//rules (sees if cell dead or alive then decides if the cell should die or not)
+                        if (universe[x, y])
                         {
-                            scratchPad[x, y] = false;
+                            if (CountNeighbor(x, y) < 2 || CountNeighbor(x, y) > 3)//rules (sees if cell dead or alive then decides if the cell should die or not)
+                            {
+                                newscratchpad[x, y] = false;
+                            }
+                            else
+                            {
+                                newscratchpad[x, y] = true;
+                            }
                         }
                         else
                         {
-                            scratchPad[x, y] = true;
+                            if (CountNeighbor(x, y) == 3)
+                            {
+                                newscratchpad[x, y] = true;
+                            }
                         }
                     }
                     else
                     {
-                        if (CountNeighbor(x, y) == 3)
+                        if (universe[x, y])
                         {
-                            scratchPad[x, y] = true;
+                            if (FiniteCountNeighbor(x, y) < 2 || FiniteCountNeighbor(x, y) > 3)//rules (sees if cell dead or alive then decides if the cell should die or not)
+                            {
+                                newscratchpad[x, y] = false;
+                            }
+                            else
+                            {
+                               newscratchpad[x, y] = true;
+                            }
+                        }
+                        else
+                        {
+                            if (FiniteCountNeighbor(x, y) == 3)
+                            {
+                                newscratchpad[x, y] = true;
+                            }
                         }
                     }
                 }
             }
             bool[,] temp = universe;//swap
-            universe = scratchPad;
-            scratchPad = temp;
+            universe = newscratchpad;
+            newscratchpad = temp;
             graphicsPanel1.Invalidate();
         }
         private int FiniteCountNeighbor(int x, int y)//this is a finite boundry
@@ -353,7 +407,7 @@ namespace Gitomer_AmaraGOL
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)//save menu item
         {
-            saveToolStripButton_Click(sender, e);
+            saveAsToolStripMenuItem_Click(sender, e);
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)//this opens a previously saved univerese
         {
@@ -385,13 +439,15 @@ namespace Gitomer_AmaraGOL
                         maxHeight++;
                         // Get the length of the current row string
                         // and adjust the maxWidth variable if necessary.
+                        if(row.Length > maxWidth)
+                        {
                         maxWidth = row.Length;
+                        }
                     }
                 }
                 // Resize the current universe and scratchPad
                 // to the width and height of the file calculated above.
                 universe = new bool[maxWidth, maxHeight];
-                scratchPad = new bool[maxWidth, maxHeight];
                 // Reset the file pointer back to the beginning of the file.
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
                 // Iterate through the file again, this time reading in the cells.
@@ -409,18 +465,18 @@ namespace Gitomer_AmaraGOL
                     // If the row is not a comment then 
                     // it is a row of cells and needs to be iterated through.
                     else
-                    { 
+                    {
                         for (int x = 0; x < row.Length; x++)//iterate through x-axis
                         {
                             if (row[x] == 'O')
                             {
                                 //if alive then append 'O' to row string  
-                                universe[x,newHeight] = true;
+                                universe[x, newHeight] = true;
                             }
                             else
                             {
                                 //if dead then append '.' to the row string
-                                universe[x,newHeight] = false;
+                                universe[x, newHeight] = false;
                             }
                         }
                         newHeight++;
@@ -429,6 +485,7 @@ namespace Gitomer_AmaraGOL
                 // Close the file.
                 reader.Close();
             }
+            graphicsPanel1.Invalidate();
         }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)//save as method for saving universe as a txt file
         {
@@ -438,7 +495,7 @@ namespace Gitomer_AmaraGOL
             savefile.DefaultExt = "cells";//add to this function in dialogue box
             if (DialogResult.OK == savefile.ShowDialog())
             {
-                StreamWriter userSave = new StreamWriter("dlg.FileName");
+                StreamWriter userSave = new StreamWriter(savefile.FileName);
                 userSave.WriteLine("!This is a comment?");
                 for (int y = 0; y < universe.GetLength(1); y++)//iterate through y-axis
                 {
@@ -456,8 +513,9 @@ namespace Gitomer_AmaraGOL
                             currentRow += '.';
                         }
                     }
-                    userSave.Close();
+                        userSave.WriteLine(currentRow);
                 }
+                    userSave.Close();
             }
         }
 
@@ -469,29 +527,7 @@ namespace Gitomer_AmaraGOL
         }
         private void saveToolStripButton_Click(object sender, EventArgs e)//this saves current univerese as txt file
         {
-            //Saving the current universe to a text file. 
-            //The current state and size of the universe should be able to be saved in PlainText file format. 
-            //The file name should be chosen by the user with a save file dialog box.
-            StreamWriter userSave = new StreamWriter("GameOfLife.txt");
-            userSave.WriteLine("!This is a comment?");
-            for (int y = 0; y < universe.GetLength(1); y++)//iterate through y-axis
-            {
-                string currentRow = string.Empty;//current row string
-                for (int x = 0; x < universe.GetLength(0); x++)//iterate through x-axis
-                {
-                    if (universe[x, y] == true)
-                    {
-                        //if alive then append 'O' to row string  
-                        currentRow += 'O';
-                    }
-                    else
-                    {
-                        //if dead then append '.' to the row string
-                        currentRow += '.';
-                    }
-                }
-                userSave.Close();
-            }
+            saveAsToolStripMenuItem_Click(sender, e);
         }
         private void openToolStripButton_Click(object sender, EventArgs e)//does the same as opening but from the tool strip button
         {
@@ -528,7 +564,14 @@ namespace Gitomer_AmaraGOL
                     {
                         universe[x, y] = false;
                     }
-                    CountNeighbor(x, y);//make the universe
+                    if (toroidal == true)
+                    {
+                        CountNeighbor(x, y);//make the universe
+                    }
+                    else
+                    {
+                        FiniteCountNeighbor(x, y);
+                    }
                 }
             }
         }
@@ -613,11 +656,14 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.Invalidate();
             }
         }
-
         private void boundryChangeToolStripMenuItem1_Click(object sender, EventArgs e)//boundry change dialouge
         {
             BoundryForm boundry = new BoundryForm();
-            if (DialogResult.OK == boundry.ShowDialog()) ;
+            if (DialogResult.OK == boundry.ShowDialog())
+            {
+                toroidal = boundry.Boundry;
+            }
+            graphicsPanel1.Invalidate();
         }
 
     }

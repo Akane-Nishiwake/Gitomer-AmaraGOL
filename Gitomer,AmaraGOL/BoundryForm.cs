@@ -16,20 +16,26 @@ namespace Gitomer_AmaraGOL
         {
             InitializeComponent();
         }
-
+        public bool Boundry
+        {
+            //bool true = toroidal
+            get;
+            set;
+        }
         private void Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private void ToroidalBoundry_CheckedChanged(object sender, EventArgs e)
+        private void OK_Click(object sender, EventArgs e)
         {
-            //initialize button function
-        }
-
-        private void FiniteBoundry_CheckedChanged(object sender, EventArgs e)
-        {
-            //initialize button function
+            if (ToroidalBoundry.Enabled)
+            {
+                Boundry = true;
+            }
+            else
+                Boundry = false;
+            DialogResult = DialogResult.OK;
         }
     }
 }
