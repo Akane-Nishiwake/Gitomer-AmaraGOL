@@ -69,6 +69,7 @@ namespace Gitomer_AmaraGOL
 
             // A Brush for filling living cells interiors (color)
             Brush cellBrush = new SolidBrush(cellColor);
+            string boundryname = "";
 
             //This prints the generations
 
@@ -134,17 +135,23 @@ namespace Gitomer_AmaraGOL
                     }
                 }
             }
-            if(hUDToolStripMenuItem.Checked)
+            if (toroidal)
+                boundryname = "Toroidal";
+            else
+                boundryname = "Finite";
+
+            Font newfont = new Font("ComicSans", 12f);
+            StringFormat newstringformat = new StringFormat();
+            newstringformat.Alignment = StringAlignment.Near;
+            newstringformat.LineAlignment = StringAlignment.Far;
+            Color hudColor = Color.FromArgb(150, 180, 0, 240);
+            Brush brushy = new SolidBrush(hudColor);
+            string stringHUD = "Generations = " + generations + "\nCell Count = " + Cellcount() + "\nUniverse size = " + universe.GetLength(0) + " , " + universe.GetLength(1) + "\nBoundry Type: " + boundryname;
+            if (hUDToolStripMenuItem.Checked)//writing HUD
             {
-                Font newfont = new Font("ComicSans", 12f);
-                StringFormat newstringformat = new StringFormat();
-                newstringformat.Alignment = StringAlignment.Near;
-                newstringformat.LineAlignment = StringAlignment.Far;
-                Color hudColor = Color.FromArgb(150, 180, 0, 240);
-                Brush brushy = new SolidBrush(hudColor);
-                string stringHUD = "Generations = " + generations + "\nCell Count = " + Cellcount() + "\nUniverse size = " + universe.GetLength(0) + " , " + universe.GetLength(1);
                 e.Graphics.DrawString(stringHUD, newfont, brushy, graphicsPanel1.ClientRectangle, newstringformat);
             }
+            brushy.Dispose();
             // Cleaning up pens and brushes- helps the garbage collector
             gridPen.Dispose();
             cellBrush.Dispose();
@@ -537,6 +544,68 @@ namespace Gitomer_AmaraGOL
                 userSave.Close();
             }
         }
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "All Files|*.*|Cells|*.cells";
+            dlg.FilterIndex = 2;
+            if (DialogResult.OK == dlg.ShowDialog())
+            {
+                StreamReader reader = new StreamReader(dlg.FileName);
+                int maxWidth = 0;
+                int maxHeight = 0;
+                while (!reader.EndOfStream)
+                {
+                    string row = reader.ReadLine();
+                    if (row[0] == '!')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        maxHeight++;
+                        if (row.Length > maxWidth)
+                        {
+                            maxWidth = row.Length;
+                        }
+                    }
+                }
+                if (maxWidth > universe.GetLength(0) | maxHeight > universe.GetLength(1))
+                {
+                    universe = new bool[maxWidth, maxHeight];
+                }
+                reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                int newHeight = 0;
+                while (!reader.EndOfStream)
+                {
+                    string row = reader.ReadLine();
+                    if (row[0] == '!')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        for (int x = 0; x < row.Length; x++)//iterate through x-axis
+                        {
+                            if (row[x] == 'O')
+                            {
+                                //if alive then append 'O' to row string  
+                                universe[x, newHeight] = true;
+                            }
+                            else
+                            {
+                                //if dead then append '.' to the row string
+                                universe[x, newHeight] = false;
+                            }
+                        }
+                        newHeight++;
+                    }
+                }
+                // Close the file.
+                reader.Close();
+            }
+            graphicsPanel1.Invalidate();
+        }
 
         //
         //This section is for tool strip items
@@ -708,10 +777,11 @@ namespace Gitomer_AmaraGOL
         private void hUDToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (hUDToolStripMenuItem.Checked)
-                hUDToolStripMenuItem.Checked = true;
-            else
                 hUDToolStripMenuItem.Checked = false;
+            else
+                hUDToolStripMenuItem.Checked = true;
             graphicsPanel1.Invalidate();
         }
+
     }
 }

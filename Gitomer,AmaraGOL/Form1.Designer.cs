@@ -77,6 +77,7 @@
             this.graphicsPanel1 = new Gitomer_AmaraGOL.GraphicsPanel();
             this.gridOnOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.neighborCountOnOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -101,6 +102,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
+            this.importToolStripMenuItem,
             this.toolStripSeparator,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
@@ -490,6 +492,13 @@
             this.neighborCountOnOffToolStripMenuItem.Text = "Neighbor Count On/Off";
             this.neighborCountOnOffToolStripMenuItem.Click += new System.EventHandler(this.neighborCountOnOffToolStripMenuItem_Click);
             // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -564,6 +573,7 @@
         private System.Windows.Forms.ToolStripMenuItem boundryChangeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem gridOnOffToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem neighborCountOnOffToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
     }
 }
 
