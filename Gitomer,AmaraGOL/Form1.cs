@@ -31,7 +31,7 @@ namespace Gitomer_AmaraGOL
         public Form1()
         {
             InitializeComponent();
-            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
+            graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;//setting default for background color
             // Setup the timer
             timer.Interval = Properties.Settings.Default.TimeReset; // milliseconds
             timer.Tick += Timer_Tick;
@@ -85,11 +85,12 @@ namespace Gitomer_AmaraGOL
                     cellRect.Width = cellWidth;
                     cellRect.Height = cellHeight;
                     Font font = new Font("ComicSans", 12f);
-                    // Fill the cell with a brush if alive 
                     StringFormat stringFormat = new StringFormat();
                     stringFormat.Alignment = StringAlignment.Center;
                     stringFormat.LineAlignment = StringAlignment.Center;
 
+                    // Fill the cell with a brush if alive 
+                    //Checks to see if toroidal or not then writing the numbers in and outside the cells
                     if (toroidal == true)
                     {
                         int bob = CountNeighbor(x, y);
@@ -128,18 +129,20 @@ namespace Gitomer_AmaraGOL
                             }
                         }
                     }
-                    // Outline the cell with a pen
+                    // Outline the cell with a pen and toggles on or off
                     if (gridOnOffToolStripMenuItem.Checked)
                     {
                         e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     }
                 }
             }
+            //checking if current universe is toroidal or not
             if (toroidal)
                 boundryname = "Toroidal";
             else
                 boundryname = "Finite";
 
+            //This is the HUD creation
             Font newfont = new Font("ComicSans", 12f);
             StringFormat newstringformat = new StringFormat();
             newstringformat.Alignment = StringAlignment.Near;
@@ -382,7 +385,7 @@ namespace Gitomer_AmaraGOL
         }
 
         //
-        //This section is for the Passive Save, Reset, and Reload
+        //This section is for the resources functions such as save and load
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             //put new property settings to save previous form
@@ -415,21 +418,6 @@ namespace Gitomer_AmaraGOL
             graphicsPanel1.BackColor = Properties.Settings.Default.PanelColor;
             timer.Interval = Properties.Settings.Default.TimeReset;
             graphicsPanel1.Invalidate();
-        }
-
-        //
-        //This section is for menu items 
-        private void playToolStripMenuItem_Click(object sender, EventArgs e)//play menu item
-        {
-            toolStripButton1_Click(sender, e);
-        }
-        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)//pause menu item
-        {
-            toolStripButton2_Click(sender, e);
-        }
-        private void nextToolStripMenuItem_Click(object sender, EventArgs e)//next menu item
-        {
-            toolStripButton3_Click(sender, e);
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)//save menu item
         {
@@ -544,7 +532,7 @@ namespace Gitomer_AmaraGOL
                 userSave.Close();
             }
         }
-        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)//This is the import function
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Filter = "All Files|*.*|Cells|*.cells";
@@ -604,6 +592,58 @@ namespace Gitomer_AmaraGOL
                 // Close the file.
                 reader.Close();
             }
+            graphicsPanel1.Invalidate();
+        }
+
+        //
+        //This section is for menu items 
+        private void playToolStripMenuItem_Click(object sender, EventArgs e)//play menu item
+        {
+            toolStripButton1_Click(sender, e);
+        }
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)//pause menu item
+        {
+            toolStripButton2_Click(sender, e);
+        }
+        private void nextToolStripMenuItem_Click(object sender, EventArgs e)//next menu item
+        {
+            toolStripButton3_Click(sender, e);
+        }
+        private void boundryChangeToolStripMenuItem1_Click(object sender, EventArgs e)//boundry change dialouge
+        {
+            BoundryForm boundry = new BoundryForm();
+            if (DialogResult.OK == boundry.ShowDialog())
+            {
+                toroidal = boundry.Boundry;
+            }
+            graphicsPanel1.Invalidate();
+        }
+        private void gridOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles grid on and off
+        {
+            if (gridOnOffToolStripMenuItem.Checked)
+            {
+                gridOnOffToolStripMenuItem.Checked = false;
+            }
+            else
+                gridOnOffToolStripMenuItem.Checked = true;
+            graphicsPanel1.Invalidate();
+        }
+        private void neighborCountOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles all displayed numbers on and off
+        {
+            if (neighborCountOnOffToolStripMenuItem.Checked)
+            {
+                neighborCountOnOffToolStripMenuItem.Checked = false;
+            }
+            else
+                neighborCountOnOffToolStripMenuItem.Checked = true;
+            graphicsPanel1.Invalidate();
+        }
+        private void hUDToolStripMenuItem_Click(object sender, EventArgs e)//toggles on and off hud
+        {
+            if (hUDToolStripMenuItem.Checked)
+                hUDToolStripMenuItem.Checked = false;
+            else
+                hUDToolStripMenuItem.Checked = true;
             graphicsPanel1.Invalidate();
         }
 
@@ -743,44 +783,6 @@ namespace Gitomer_AmaraGOL
                 graphicsPanel1.BackColor = bcolor.Color;
                 graphicsPanel1.Invalidate();
             }
-        }
-        private void boundryChangeToolStripMenuItem1_Click(object sender, EventArgs e)//boundry change dialouge
-        {
-            BoundryForm boundry = new BoundryForm();
-            if (DialogResult.OK == boundry.ShowDialog())
-            {
-                toroidal = boundry.Boundry;
-            }
-            graphicsPanel1.Invalidate();
-        }
-
-        private void gridOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles grid on and off
-        {
-            if (gridOnOffToolStripMenuItem.Checked)
-            {
-                gridOnOffToolStripMenuItem.Checked = false;
-            }
-            else
-                gridOnOffToolStripMenuItem.Checked = true;
-            graphicsPanel1.Invalidate();
-        }
-        private void neighborCountOnOffToolStripMenuItem_Click(object sender, EventArgs e)//This toggles all displayed numbers on and off
-        {
-            if (neighborCountOnOffToolStripMenuItem.Checked)
-            {
-                neighborCountOnOffToolStripMenuItem.Checked = false;
-            }
-            else
-                neighborCountOnOffToolStripMenuItem.Checked = true;
-            graphicsPanel1.Invalidate();
-        }
-        private void hUDToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (hUDToolStripMenuItem.Checked)
-                hUDToolStripMenuItem.Checked = false;
-            else
-                hUDToolStripMenuItem.Checked = true;
-            graphicsPanel1.Invalidate();
         }
 
     }
